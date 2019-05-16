@@ -31,17 +31,40 @@ export default (parsed) => {
     }
   }
 
-  const polylines = entities.map(entity => {
-    return { layer: entity.layer, vertices: applyTransforms(entityToPolyline(entity), entity.transforms) };
-  });
+  for (let entity of entities) {
+    entity = { layer: entity.layer, vertices: applyTransforms(entityToPolyline(entity), entity.transforms) };
+  }
 
-  const bbox = new Box2();
+  const box = new Box2();
 
-  polylines.forEach(polyline => {
-    polyline.vertices.forEach(vertex => {
-      bbox.expandByPoint({ x: vertex[0], y: vertex[1] });
-    });
-  });
+  for (const entity of entities) {
+    for (const vertex of entity.vertices) {
+        box.expandByPoint({ x: vertex[0], y: vertex[1] });
+    }
+  }
 
-  return { layers, bbox, polylines };
+  let smallDifference;
+  let difference;
+  let min;
+
+  if (Math.abs(box.max.x - box.min.x) > Math.abs(box.max.y - box.min.y)) {
+    difference = Math.abs(box.max.x - box.min.x);
+    min = box.min.x;
+    smallDifference = Math.abs(box.max.y - box.min.y);
+  } else {
+    difference = Math.abs(box.max.y - box.min.y);
+    min = box.min.y;
+    smallDifference = Math.abs(box.max.x - box.min.x);
+  }
+
+  smallDifference = ((smallDifference - min) / difference) / 2;
+
+  for (const entity of entities) {
+    for (const vertex of entity.vertices) {
+      vertex[0] = (vertex[0] - min) / difference;
+      vertex[1] = ((vertex[1] - min) / difference) - smallDifference;
+    }
+  }
+
+  return { layers, box, polylines: entities };
 }
