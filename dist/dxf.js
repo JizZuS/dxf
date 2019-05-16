@@ -2051,6 +2051,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var _default = function _default(parsed) {
   var entities = (0, _denormalise.default)(parsed);
+  var layers = [];
+
+  for (var layer in parsed.tables.layers) {
+    if (parsed.tables.layers.hasOwnProperty(layer)) {
+      if (parsed.tables.layers[layer].type !== "LAYER") {
+        continue;
+      }
+
+      layers.push({
+        name: parsed.tables.layers[layer].name,
+        type: parsed.tables.layers[layer].lineTypeName.toLowerCase(),
+        color: _colors.default[parsed.tables.layers[layer].colorNumber]
+      });
+    }
+  }
+
   var polylines = entities.map(function (entity) {
     return {
       layer: entity.layer,
@@ -2067,7 +2083,7 @@ var _default = function _default(parsed) {
     });
   });
   return {
-    layerTable: parsed.tables.layers,
+    layers: layers,
     bbox: bbox,
     polylines: polylines
   };
