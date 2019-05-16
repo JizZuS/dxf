@@ -255,4 +255,8 @@ export default [
   [130, 130, 130],
   [190, 190, 190],
   [255, 255, 255]
-]
+];
+
+export function colorToInt(color) {
+    return (color[0] << 16) + (color[1] << 8) + color[2];
+}
