@@ -31,8 +31,8 @@ export default (parsed) => {
     }
   }
 
-  for (let entity of entities) {
-    entity = { layer: entity.layer, vertices: applyTransforms(entityToPolyline(entity), entity.transforms) };
+  for (let i = 0; i < entities.length; i++) {
+    entities[i] = { layer: entities[i].layer, vertices: applyTransforms(entityToPolyline(entities[i]), entities[i].transforms) };
   }
 
   const box = new Box2();
