@@ -2069,7 +2069,7 @@ var _default = function _default(parsed) {
 
       layers.push({
         name: parsed.tables.layers[layer].name,
-        type: parsed.tables.layers[layer].lineTypeName.toLowerCase(),
+        type: parsed.tables.layers[layer].lineTypeName.toLowerCase() === "continuous" ? "continuous" : "dashdot",
         color: color
       });
     }
