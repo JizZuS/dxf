@@ -9,21 +9,7 @@ import logger from './util/logger'
 export default (parsed) => {
   const entities = denormalise(parsed)
   const polylines = entities.map(entity => {
-    const layerTable = parsed.tables.layers[entity.layer]
-    let rgb
-    if (layerTable) {
-      let colorNumber = ('colorNumber' in entity) ? entity.colorNumber : layerTable.colorNumber
-      rgb = colors[colorNumber]
-      if (rgb === undefined) {
-        logger.warn('Color index', colorNumber, 'invalid, defaulting to black')
-        rgb = [0, 0, 0]
-      }
-    } else {
-      logger.warn('no layer table for layer:' + entity.layer)
-      rgb = [0, 0, 0]
-    }
-
-    return { rgb, vertices: applyTransforms(entityToPolyline(entity), entity.transforms) }
+    return { layer: entity.layer, vertices: applyTransforms(entityToPolyline(entity), entity.transforms) }
   })
 
   const bbox = new Box2()
@@ -33,5 +19,5 @@ export default (parsed) => {
     })
   })
 
-  return { bbox, polylines }
+  return { layerTable: parsed.tables.layers, bbox, polylines }
 }
