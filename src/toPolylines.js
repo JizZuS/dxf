@@ -20,6 +20,10 @@ export default (parsed) => {
       let color = 0;
 
       if (colors[parsed.tables.layers[layer].colorNumber] !== undefined) {
+        if (parsed.tables.layers[layer].colorNumber < 0) {
+            continue;
+        }
+
         color = colorToInt(colors[parsed.tables.layers[layer].colorNumber]);
       }
 
